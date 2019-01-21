@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jk.mapper.AttrMapper">
+
+    <!--分页查询列表统计数量 -->
+    <select id="queryAttrPageCount" parameterType="map" resultType="int">
+        select count(1) from t_mall_attr tma
+        left join t_mall_value tmv on tma.flbh2 = tmv.shxm_id
+    </select>
+    <!--分页查询列表  -->
+    <select id="queryBooksList" parameterType="map" resultType="com.jk.bean.Attr">
+        SELECT * FROM
+        (
+        SELECT A.*, ROWNUM RN
+        FROM (
+
+        select b.id,b.bName,b.price,b.bJianJie,b.bBiming,b.bUrl,b.upOrDown,
+        bt.typeName as typeName from books b
+        left join book_type bt on b.bType = bt.id
+
+        ) A
+        WHERE ROWNUM &lt;= #{endIndex,jdbcType=NUMERIC}
+        )
+        WHERE RN > #{startIndex,jdbcType=NUMERIC}
+    </select>
+</mapper>
